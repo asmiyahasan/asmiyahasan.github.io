@@ -1,13 +1,14 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: Calibri, Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #020628;
+    overflow: hidden;
+    cursor: none;
 }
 
 header {
-    background-color: #996161;
-    color: white;
+    color: rgb(228, 211, 177);
     text-align: center;
     padding: 1em 0;
 }
@@ -18,4 +19,114 @@ section {
     background-color: white;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+a:hover {
+    cursor: none;
+}
+
+/* unvisited link */
+header a:link {
+    color: red;
+    background-color: #b57d7d;
+  }
+  
+  /* visited link */
+  header a:visited {
+    color: green;
+  }
+  
+  /* mouse over link */
+  header a:hover {
+    color: hotpink;
+    cursor: none;
+  }
+  
+  /* selected link */
+  header a:active {
+    color: blue;
+  }
+
+  /* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* Menu Styling */
+.menu {
+    display: none; /* Hide the menu by default */
+    position: top;
+}
+
+.menu ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.menu ul li {
+    padding: 15px;
+    text-align: center;
+}
+
+.menu ul li a {
+    border: 1px solid #acacac;
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 12px;
+}
+
+.menu ul li a:hover {
+    background-color: #ffffff;
+}
+
+/* Menu Button Styling */
+.menu-btn {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.menu-btn:hover {
+    background-color: #575757;
+    
+}
+
+.menu-btn:hover + .menu {
+    display: block;
+}
+
+/* Hover effects */
+#menu-container:hover #menu {
+    display: block; /* Show the menu when hovering over the container */
+}
+
+#end {
+    color: white;
+}
+
+/* Custom cursor styling */
+.custom-cursor {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(221, 206, 201, 0.8); /* Glowing effect */
+    pointer-events: none; /* Prevent the custom cursor from interfering with mouse events */
+    transition: background-color 0s ease;
+}
+
+/* Change cursor color on hover */
+.custom-cursor.hover {
+    background-color: #32cd32; /* Lime color when hovering */
+    box-shadow: 0 0 15px rgba(50, 205, 50, 0.8); /* Green glowing effect */
 }
