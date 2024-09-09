@@ -1,26 +1,40 @@
-// Get the menu button and menu element
-const menuBtn = document.getElementById('menu-btn');
-const menu = document.getElementById('menu');
+document.addEventListener('DOMContentLoaded', () => {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const close = document.querySelector('.close');
 
-// Create a custom cursor element
-const cursor = document.createElement('div');
-cursor.classList.add('custom-cursor');
-document.body.appendChild(cursor);
+    document.querySelectorAll('.gallery-image').forEach(img => {
+        img.addEventListener('click', (e) => {
+            lightbox.style.display = 'flex';
+            lightboxImg.src = e.target.src;
+        });
+    });
 
-// Update cursor position based on mouse movement
-document.addEventListener('mousemove', (event) => {
-    const x = event.clientX;
-    const y = event.clientY;
-    cursor.style.left = `${x}px`;
-    cursor.style.top = `${y}px`;
+    close.addEventListener('click', () => {
+        lightbox.style.display = 'none';
+    });
+
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) {
+            lightbox.style.display = 'none';
+        }
+    });
 });
 
-// Add a hover effect when the mouse is over specific elements
-document.querySelectorAll('a, button, .hover-target').forEach(element => {
-    element.addEventListener('mouseover', () => {
-        cursor.classList.add('hover');
-    });
-    element.addEventListener('mouseout', () => {
-        cursor.classList.remove('hover');
+document.addEventListener('scroll', function () {
+    var sections = document.querySelectorAll('.main');
+    var navLinks = document.querySelectorAll('#menu ul li a');
+
+    sections.forEach(function (section) {
+        var top = section.offsetTop;
+        var height = section.offsetHeight;
+        var id = section.getAttribute('id');
+        var navLink = document.querySelector('a[href="#' + id + '"]');
+
+        if (window.scrollY >= top && window.scrollY < top + height) {
+            navLink.classList.add('active');
+        } else {
+            navLink.classList.remove('active');
+        }
     });
 });
