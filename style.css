@@ -1,5 +1,6 @@
 body {
-    font-family: "Calibri Light", Arial, sans-serif;
+    /* font-family: "Calibri Light", Arial, sans-serif; */
+    font-family: Calibri, Tahoma, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f5f2f4;
@@ -11,11 +12,13 @@ header {
     text-align: left;
     margin: 20px 0 0 20px;
     padding: 1em;
-    font-size: 28pt;
+    font-size: 24pt;
+    font-weight: normal;
 }
 
-h1 {
+h1, h2, h3 {
     /* text-shadow: 5px 5px #80808037; */
+    font-weight: normal;
 }
 
 #header-container {
@@ -23,6 +26,8 @@ h1 {
     background-color: #2a2626;
     height: 100%;
     position: fixed;
+    top: 0;
+    left: 0;
     border-right: 1px dotted #616161;
 }
 
@@ -30,11 +35,16 @@ h2 {
     color: #272727;
 }
 
-.main {
-    padding: 12em;
+#main-container {
     float: right;
-    width: 55%;
+    width: 60%;
     overflow: scroll;
+    position: relative;
+    right: 8%;
+}
+
+.main {
+    padding: 10em 2em 5em 3em;
 }
 
 .menu ul {
@@ -44,7 +54,6 @@ h2 {
 
 .menu ul li a {
     color: rgb(232, 230, 230);
-    /* color: #000; */
     text-decoration: none; 
     display: block;
     padding: 10px 20px;
@@ -53,25 +62,20 @@ h2 {
     text-align: right;
 }
 
-.menu ul li a:hover {
-    color: #e81ea5;
-}
-
-#menu ul li a.active {
+.menu ul li a:hover, #menu ul li a.active {
     color: #e81ea5;
 }
 
 .gallery {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    /* gap: 20px; */
     padding: 0px;
-    /* justify-content: center; */
 }
 
 .gallery-item {
-    /* flex: 1 1 calc(33.333% - 100px); */
-    box-sizing: border-box;
+    flex: 1 1 calc(20%);
+    /* box-sizing: border-box; */
 }
 
 .gallery-image {
@@ -80,7 +84,7 @@ h2 {
     cursor: pointer;
     transition: transform 0.5s;
     object-fit: cover;
-    border: 3px solid #434343;
+    border: 2px solid #000000;
 }
 
 .gallery-image:hover {
