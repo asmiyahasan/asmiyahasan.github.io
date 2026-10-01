@@ -73,6 +73,14 @@ h3 {
   font-size: 1.125rem;
 }
 
+.name-first {
+  color: var(--prey);
+}
+
+.name-last {
+  color: #6e6e78;
+}
+
 p {
   margin: 0 0 1rem;
   max-width: var(--measure);
