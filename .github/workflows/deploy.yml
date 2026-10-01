@@ -1,0 +1,56 @@
+name: Test and deploy
+
+on:
+  push:
+    branches: [main, new-site]
+  pull_request:
+  workflow_dispatch: # lets you re-run a deploy by hand from the Actions tab
+
+# Only one deploy at a time; a newer push cancels an older one still waiting
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci # installs exactly what's in package-lock.json, like `uv sync --locked`
+
+      - name: Run tests (physics, game and model parity)
+        run: npm test
+
+      - name: Build the site
+        run: npm run build # type-checks, then writes the finished site to dist/
+
+      - name: Upload the built site
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    # Only main is published; other branches and pull requests just get tested
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write # to publish to GitHub Pages
+      id-token: write # to prove the deploy really comes from this repo
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
