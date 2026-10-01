@@ -1,4 +1,5 @@
-// The playable page: a human controls one side, a trained agent the other.
+// The game on the home page: a human controls one side, a trained agent the other.
+// Until the visitor starts a game, the two agents play each other as a live demo.
 //
 // The game logic runs at a fixed 10 steps per second, exactly like training.
 // The screen redraws ~60 times per second, smoothly interpolating positions
@@ -12,15 +13,20 @@ import type { AgentName, PerAgent } from "./game/game";
 import { loadPolicy } from "./game/policy";
 import type { ExportedModel, Policy } from "./game/policy";
 import { showModelCard } from "./modelCard";
+import { setUpTicTacToe } from "./tictactoe/ui";
 
 const STEP_MS = DT * 1000;
+// Matches the site palette in style.css: the accent magenta is the predator
 const COLOURS = {
-  background: "#ffffff",
-  obstacle: "#5a5a5f",
-  sightLine: "rgba(0, 0, 0, 0.15)",
-  predator: "#d64541",
-  prey: "#346ec8",
+  background: "#28282d",
+  obstacle: "#45454d",
+  sightLine: "rgba(255, 255, 255, 0.14)",
+  predator: "#ff4d9d",
+  prey: "#5ccfe6",
 };
+
+// Visitors who ask for less motion don't get the self-playing demo
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // ---------------------------------------------------------------------------
 // Page elements
@@ -79,6 +85,7 @@ let state: "loading" | "ready" | "playing" | "over" = "loading";
 let humanSide: AgentName = "prey";
 let difficulty: Difficulty = "easy";
 let aiPolicy: Policy;
+let demoPolicy: Policy; // plays the visitor's side during the demo
 let game: Game | undefined;
 let observations: PerAgent<Float32Array>;
 let previous: PerAgent<Vec2>; // positions before the latest step, for smooth drawing
@@ -110,10 +117,14 @@ async function setUp() {
 
   const wanted = `${humanSide}-${difficulty}`;
   try {
-    const { policy, model } = await getPolicy(aiSide(), difficulty);
+    const [ai, demo] = await Promise.all([
+      getPolicy(aiSide(), difficulty),
+      getPolicy(humanSide, difficulty),
+    ]);
     if (wanted !== `${humanSide}-${difficulty}`) return; // the player changed their mind while it loaded
-    aiPolicy = policy;
-    game ??= new Game(model.game_config);
+    aiPolicy = ai.policy;
+    demoPolicy = demo.policy;
+    game ??= new Game(ai.model.game_config);
     showReady();
   } catch (error) {
     showOverlay(`Something went wrong loading the agent.\n${(error as Error).message}`);
@@ -143,11 +154,12 @@ function showOverlay(text: string) {
 
 function showReady() {
   state = "ready";
-  game!.resetRandom();
+  observations = game!.resetRandom();
   snapshotPositions();
+  accumulator = 0;
   const goal = humanSide === "prey"
-    ? "You are the blue prey.\nStay alive for 30 seconds."
-    : "You are the red predator.\nCatch the prey within 30 seconds.";
+    ? "You are the cyan prey. Stay alive for 30 seconds."
+    : "You are the pink predator. Catch the prey within 30 seconds.";
   showOverlay(`${goal}\nOpponent: ${difficulty} AI ${aiSide()}\n\nPress Space to start`);
 }
 
@@ -165,6 +177,22 @@ function snapshotPositions() {
     predator: [...game.states.predator.position] as Vec2,
     prey: [...game.states.prey.position] as Vec2,
   };
+}
+
+// One step of the demo: both sides are played by the agents
+function demoTick() {
+  const game = currentGame();
+  snapshotPositions();
+  const actions = {
+    [aiSide()]: aiPolicy(observations[aiSide()]),
+    [humanSide]: demoPolicy(observations[humanSide]),
+  } as PerAgent<number>;
+  const result = game.step(actions);
+  observations = result.observations;
+  if (result.done) {
+    observations = game.resetRandom();
+    snapshotPositions();
+  }
 }
 
 function tick() {
@@ -215,7 +243,8 @@ function draw(alpha: number) {
     ctx.fillRect(left, top, (xMax - xMin) * scale, (yMax - yMin) * scale);
   }
 
-  const t = state === "playing" ? alpha : 1;
+  const moving = state === "playing" || (state === "ready" && !reduceMotion);
+  const t = moving ? alpha : 1;
   const pos: PerAgent<Vec2> = {
     predator: toScreen(lerp(previous.predator, game.states.predator.position, t)),
     prey: toScreen(lerp(previous.prey, game.states.prey.position, t)),
@@ -237,7 +266,7 @@ function draw(alpha: number) {
     ctx.arc(pos[agent][0], pos[agent][1], radius, 0, Math.PI * 2);
     ctx.fill();
 
-    if (agent === humanSide) {
+    if (agent === humanSide && state !== "ready") {
       // A ring around the player so you can find yourself instantly
       ctx.strokeStyle = COLOURS[agent];
       ctx.lineWidth = 2;
@@ -248,7 +277,7 @@ function draw(alpha: number) {
   }
 
   const seconds = (game.stepCount * DT).toFixed(1);
-  statusLeft.textContent = `Time: ${seconds} s / 30 s`;
+  statusLeft.textContent = state === "ready" ? "Demo: agent vs agent" : `Time: ${seconds} s / 30 s`;
   statusRight.textContent = game.visible ? "In sight" : "Hidden";
 }
 
@@ -263,6 +292,12 @@ function frame(now: number) {
     accumulator += elapsed;
     while (accumulator >= STEP_MS && state === "playing") {
       tick();
+      accumulator -= STEP_MS;
+    }
+  } else if (state === "ready" && !reduceMotion) {
+    accumulator += elapsed;
+    while (accumulator >= STEP_MS && state === "ready") {
+      demoTick();
       accumulator -= STEP_MS;
     }
   }
@@ -285,3 +320,4 @@ async function loadModel(name: string): Promise<ExportedModel> {
 setUp();
 requestAnimationFrame(frame);
 showModelCard(document.querySelector<HTMLElement>("#model-card")!);
+setUpTicTacToe(document.querySelector<HTMLElement>("#teach")!);
