@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Predator vs Prey | Asmiya Hasan</title>
+    <meta
+      name="description"
+      content="Training a predator and prey with self-play reinforcement learning, and shipping them to the browser with an automated MLOps pipeline."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="site-nav">
+      <a class="nav-name" href="../">Asmiya Hasan</a>
+      <nav aria-label="Sections">
+        <a href="../#work">Work</a>
+        <a href="../#about">About</a>
+        <a href="../#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <article class="writeup">
+        <h1>Predator vs Prey</h1>
+        <p class="lede">
+          Two agents learned to chase and to hide by playing tens of thousands of games
+          against each other. This page covers how the game works, what the experiments showed, and how a new
+          model gets from my laptop to the version you can play.
+        </p>
+        <p>
+          <a class="text-link" href="../#work">Play it</a> &nbsp;
+          <a class="text-link" href="https://github.com/asmiyahasan/predator-prey" target="_blank" rel="noopener">Training code</a> &nbsp;
+          <a class="text-link" href="https://github.com/asmiyahasan/asmiyahasan.github.io" target="_blank" rel="noopener">Website code</a>
+        </p>
+
+        <section>
+          <h2>The game</h2>
+          <p>
+            A predator and a prey move around a 10 × 10 arena with four blocks in it. Each step
+            (ten per second), both pick one of nine moves: eight directions or stay still. The
+            predator wins by touching the prey within 30 seconds; the prey wins by surviving.
+          </p>
+          <p>
+            Both have the same top speed, but the prey accelerates faster, so it can out-turn the
+            predator. Rewards are zero-sum: every step the prey survives is worth +0.01 to it and
+            −0.01 to the predator, and a catch is worth +1 to the predator and −1 to the prey.
+          </p>
+          <p>Each agent sees 28 numbers every step:</p>
+          <ul>
+            <li>its own position and velocity</li>
+            <li>16 rays measuring the distance to the nearest wall or block in every direction</li>
+            <li>the opponent's position and velocity, but only when no block is in the way</li>
+            <li>where it last saw the opponent, and how long ago</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Training</h2>
+          <p>
+            The environment is written in Python with the PettingZoo multi-agent interface, and
+            the agents are trained with PPO from Stable-Baselines3. Training is self-play: the
+            predator trains against a pool of earlier prey, then the prey trains against a pool of
+            earlier predators, and so on for ten generations. Keeping old opponents in the pool
+            stops each side forgetting how to beat strategies it has already seen.
+          </p>
+          <p>
+            Before any learning, I built scripted baselines (a chaser that runs straight at the
+            prey and a fleer that runs straight away) to check the environment worked and to
+            measure trained agents against.
+          </p>
+        </section>
+
+        <section>
+          <h2>What the experiments showed</h2>
+          <p>
+            The interesting part was balance: whichever side found a reliable strategy would win
+            every game, and a game one side always wins is no fun to play against. Each change
+            below was a response to what the previous run showed.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Setup</th>
+                  <th scope="col">What happened</th>
+                  <th scope="col">Predator's catch rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Open arena, predator 10% faster</td>
+                  <td>The predator worked out how to corner the prey and never lost again.</td>
+                  <td class="number">100% from generation 3</td>
+                </tr>
+                <tr>
+                  <td>Open arena, equal speeds</td>
+                  <td>A real contest for five generations, then the predator broke through.</td>
+                  <td class="number">0–28%, then 100%</td>
+                </tr>
+                <tr>
+                  <td>Four blocks and raycast vision</td>
+                  <td>
+                    The prey learned to break line of sight behind blocks. The predator had no
+                    memory, so once the prey was hidden it had no idea where it had gone.
+                  </td>
+                  <td class="number">Up to 84%, then down to 3%</td>
+                </tr>
+                <tr>
+                  <td>Blocks plus "last seen" memory</td>
+                  <td>
+                    The most even match: around half of games went each way in the middle
+                    generations, before the prey edged ahead again.
+                  </td>
+                  <td class="number">48–55% at generations 6–8</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            Catch rates are for the latest predator against the latest prey, over 200 games with
+            fixed starting positions.
+          </p>
+        </section>
+
+        <section>
+          <h2>From training to the browser</h2>
+          <p>
+            There is no server: the trained networks run in your browser. That meant rewriting the
+            game in TypeScript, and the risk of a port is that it is almost the same. An agent
+            playing a game that is 1% different from the one it trained in can quietly play badly.
+          </p>
+          <p>Two kinds of file keep the Python and TypeScript versions honest:</p>
+          <ul>
+            <li>
+              <strong>Parity fixtures:</strong> recorded games from Python, with every position,
+              observation and reward. The website's tests replay them and require the TypeScript
+              game to match to within rounding.
+            </li>
+            <li>
+              <strong>Model test vectors:</strong> each exported network carries sample inputs and
+              the exact outputs Python computed, and the website checks it reproduces them.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Getting a new model live</h2>
+          <p>A new model goes through the same steps every time, and each one can stop it:</p>
+          <ol>
+            <li>
+              <strong>Export.</strong> The network is converted to JSON and checked to choose the
+              same action as the original on thousands of steps.
+            </li>
+            <li>
+              <strong>Evaluation gate.</strong> The new model plays 300 games against the current
+              champion. It is only promoted if it beats the champion by at least 3 percentage
+              points and still beats the scripted baselines.
+            </li>
+            <li>
+              <strong>Release.</strong> Champions are published as a versioned GitHub Release
+              with the models, parity fixtures, a model card and the gate report.
+            </li>
+            <li>
+              <strong>Pull request.</strong> A GitHub Actions workflow opens a pull request on the
+              website repository with the new files.
+            </li>
+            <li>
+              <strong>Checks and deploy.</strong> The website's CI runs every parity test against
+              the new files. Merging deploys the site to GitHub Pages.
+            </li>
+          </ol>
+          <p>
+            The gate earned its place on its first real run: generation 8 had been the most evenly
+            matched pair in training, but against the generation 10 champion its prey survived 37.7%
+            of games where the champion survived 82.3%, so it was rejected.
+          </p>
+        </section>
+
+        <section>
+          <h2>What I'd do next</h2>
+          <ul>
+            <li>[Your own ideas, e.g. implementing PPO from scratch and matching Stable-Baselines3]</li>
+            <li>[e.g. more varied maps, so agents learn to read raycasts rather than memorise one layout]</li>
+            <li>[e.g. collecting results from human games to measure how the agents do against people]</li>
+          </ul>
+        </section>
+
+        <a class="text-link back-link" href="../">Back to the home page</a>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>Built with TypeScript and Vite.</p>
+    </footer>
+
+    <script type="module" src="/src/writeup.ts"></script>
+  </body>
+</html>

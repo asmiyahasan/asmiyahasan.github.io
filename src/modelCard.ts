@@ -61,7 +61,7 @@ function describeAgent(side: "predator" | "prey", agent: AgentCard): string {
     <li>
       <span class="card-agent card-${side}">${side === "predator" ? "Predator" : "Prey"}</span>
       ${escape(generationName(agent.source_model))} of self-play, champion since v${agent.promoted_in_version}.
-      <span class="card-facts">${escape(facts.join(" · "))}</span>
+      <span class="card-facts">${escape(facts.join(", "))}</span>
     </li>`;
 }
 
