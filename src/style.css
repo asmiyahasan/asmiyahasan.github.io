@@ -616,8 +616,25 @@ canvas {
   padding-top: 0.25rem;
 }
 
-.project-list h3 {
-  margin-bottom: 0.4rem;
+.project-group {
+  margin: 2rem 0 0.25rem;
+  color: var(--muted);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.project-group:first-of-type {
+  margin-top: 0.5rem;
+}
+
+.project-list h4 {
+  margin: 0 0 0.4rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.project-links {
+  margin-top: 0.6rem;
 }
 
 .project-list p {
@@ -672,7 +689,7 @@ canvas {
   padding: 4rem 0 2rem;
 }
 
-.writeup h1 {
+.writeup > h1 {
   font-size: clamp(2.25rem, 7vw, 3.25rem);
   font-weight: 700;
   letter-spacing: -0.03em;
@@ -686,12 +703,29 @@ canvas {
   margin-bottom: 1.5rem;
 }
 
-.writeup section {
+.writeup > section {
   padding: 2.5rem 0 0.5rem;
 }
 
-.writeup h2 {
+.writeup > section > h2 {
   margin-bottom: 0.75rem;
+}
+
+.writeup > .play {
+  padding-top: 1.5rem;
+}
+
+/* Game pages */
+.game-page {
+  padding: 4rem 0 2.5rem;
+}
+
+.game-page h1 {
+  font-size: clamp(2.25rem, 7vw, 3.25rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: 1rem;
 }
 
 .writeup ul,

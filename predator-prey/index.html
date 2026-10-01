@@ -19,7 +19,7 @@
     <header class="site-nav">
       <a class="nav-name" href="../">Asmiya Hasan</a>
       <nav aria-label="Sections">
-        <a href="../#work">Work</a>
+        <a href="../#projects">Projects</a>
         <a href="../#about">About</a>
         <a href="../#contact">Contact</a>
       </nav>
@@ -34,10 +34,44 @@
           model gets from my laptop to the version you can play.
         </p>
         <p>
-          <a class="text-link" href="../#work">Play it</a> &nbsp;
           <a class="text-link" href="https://github.com/asmiyahasan/predator-prey" target="_blank" rel="noopener">Training code</a> &nbsp;
           <a class="text-link" href="https://github.com/asmiyahasan/asmiyahasan.github.io" target="_blank" rel="noopener">Website code</a>
         </p>
+
+        <section id="play" class="play" aria-label="Play Predator vs Prey">
+          <div class="game">
+            <div class="game-controls">
+              <div class="segmented" role="group" aria-label="Your side">
+                <button class="side-button" data-side="prey">Play as prey</button>
+                <button class="side-button" data-side="predator">Play as predator</button>
+              </div>
+              <div class="segmented" role="group" aria-label="Difficulty">
+                <button class="difficulty-button" data-difficulty="easy">Easy</button>
+                <button class="difficulty-button" data-difficulty="medium">Medium</button>
+                <button class="difficulty-button" data-difficulty="hard">Hard</button>
+              </div>
+            </div>
+
+            <div class="arena-wrap">
+              <canvas id="arena" width="600" height="600" aria-label="Game arena"></canvas>
+              <div id="overlay" class="overlay">
+                <p id="overlay-text">Loading the agents…</p>
+              </div>
+            </div>
+
+            <div class="status">
+              <span id="status-left"></span>
+              <span id="status-right"></span>
+            </div>
+            <p class="help">
+              Move with the arrow keys or WASD; hold two keys to move diagonally. Press Space to
+              start. Until you do, the two agents play each other. Playing needs a keyboard, so on a
+              phone you can watch the demo.
+            </p>
+
+            <section id="model-card" class="model-card" hidden></section>
+          </div>
+        </section>
 
         <section>
           <h2>The game</h2>
@@ -191,7 +225,7 @@
           </ul>
         </section>
 
-        <a class="text-link back-link" href="../">Back to the home page</a>
+        <p><a class="text-link back-link" href="#play">Back to the game</a></p>
       </article>
     </main>
 
@@ -199,6 +233,6 @@
       <p>Built with TypeScript and Vite.</p>
     </footer>
 
-    <script type="module" src="/src/writeup.ts"></script>
+    <script type="module" src="/src/predatorPrey.ts"></script>
   </body>
 </html>

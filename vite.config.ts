@@ -1,4 +1,4 @@
-// Tells Vite the site has two pages, so both are included in the build.
+// Tells Vite the site has three pages, so all of them are included in the build.
 import { resolve } from "node:path";
 import { defineConfig } from "vite";
 
@@ -7,7 +7,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         home: resolve(import.meta.dirname, "index.html"),
-        writeup: resolve(import.meta.dirname, "predator-prey/index.html"),
+        predatorPrey: resolve(import.meta.dirname, "predator-prey/index.html"),
+        ticTacToe: resolve(import.meta.dirname, "tic-tac-toe/index.html"),
       },
     },
   },

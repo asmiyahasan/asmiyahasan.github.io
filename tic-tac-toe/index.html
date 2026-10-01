@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teach an agent tic-tac-toe | Asmiya Hasan</title>
+    <meta name="description" content="An agent that learns tic-tac-toe from the games you play against it, live in your browser." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="site-nav">
+      <a class="nav-name" href="../">Asmiya Hasan</a>
+      <nav aria-label="Sections">
+        <a href="../#projects">Projects</a>
+        <a href="../#about">About</a>
+        <a href="../#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <article id="teach" class="teach game-page" aria-labelledby="teach-title">
+        <h1 id="teach-title">Teach an agent tic&#8209;tac&#8209;toe</h1>
+        <p>
+          This agent starts out knowing only the rules. Every game you play against it, it
+          updates its opinion of each position it has seen, so if you beat it the same way twice
+          it starts to block you. Or let it practise against itself and watch the chart climb.
+        </p>
+
+        <div class="teach-layout">
+          <div class="ttt">
+            <div class="ttt-board" role="group" aria-label="Tic-tac-toe board"></div>
+            <p class="ttt-status" aria-live="polite"></p>
+            <p class="ttt-tally"></p>
+            <div class="ttt-actions">
+              <button id="ttt-new" class="button">New game</button>
+              <label class="check">
+                <input type="checkbox" id="ttt-thinking" checked />
+                Show what it's thinking
+              </label>
+            </div>
+          </div>
+
+          <div class="ttt-panel">
+            <figure class="ttt-chart">
+              <figcaption>
+                How often it avoids losing to a perfect player
+                <small>Each point is a 200-game test. A perfect player can't be beaten, so 100% means every game was a draw: the agent plays perfectly.</small>
+              </figcaption>
+              <div class="ttt-chart-area">
+                <svg role="img" aria-label="Line chart of the agent's results as it learns"></svg>
+                <div class="ttt-tooltip" hidden></div>
+              </div>
+            </figure>
+            <p class="ttt-count"></p>
+
+            <div class="ttt-buttons">
+              <button id="ttt-practise" class="button button-accent">Practise 250 games</button>
+              <button id="ttt-forget" class="button">Forget everything</button>
+            </div>
+
+            <label class="slider" for="ttt-lr">
+              <span>Learning rate <output id="ttt-lr-value"></output></span>
+              <input type="range" id="ttt-lr" min="0.05" max="1" step="0.05" value="0.3" />
+              <small>How far each game moves its opinions. High learns fast but can swing wildly.</small>
+            </label>
+            <label class="slider" for="ttt-exploration">
+              <span>Exploration <output id="ttt-exploration-value"></output></span>
+              <input type="range" id="ttt-exploration" min="0" max="0.5" step="0.05" value="0.1" />
+              <small>How often it tries a random move to discover new ideas, even against you.</small>
+            </label>
+          </div>
+        </div>
+      </article>
+
+      <section class="how-it-works" aria-labelledby="how-title">
+        <h2 id="how-title">How it learns</h2>
+        <p>
+          The agent keeps a table with one number for every position it has seen: its estimate
+          of how likely that position is to end well for the player who just moved there. Every
+          number starts at 50, meaning "no idea". To choose a move, it looks at the positions each
+          move would lead to and picks the one with the highest number, except that every so
+          often it tries a random move instead, to discover things it would never otherwise try.
+        </p>
+        <p>
+          After each game it walks back through the positions both players moved to, nudging each
+          one towards the value of the position that came next, and the last one towards the
+          result. Boards that are rotations or mirror images of each other count as one position,
+          so it learns 8 times faster. This is the method from chapter 1 of Sutton and Barto's
+          <em>Reinforcement Learning: An Introduction</em>.
+        </p>
+        <p>
+          <a class="text-link" href="https://github.com/asmiyahasan/asmiyahasan.github.io/tree/main/src/tictactoe" target="_blank" rel="noopener">Read the code</a>
+        </p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Built with TypeScript and Vite. Everything runs in your browser.</p>
+    </footer>
+
+    <script type="module" src="/src/ticTacToePage.ts"></script>
+  </body>
+</html>
