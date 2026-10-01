@@ -66,6 +66,28 @@ h1 {
   color: var(--predator);
 }
 
+.difficulty {
+  gap: 6px;
+}
+
+.difficulty-button {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.difficulty-button.active {
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--bg);
+}
+
 .arena-wrap {
   position: relative;
 }

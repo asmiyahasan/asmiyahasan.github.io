@@ -31,6 +31,7 @@ const overlayText = document.querySelector<HTMLParagraphElement>("#overlay-text"
 const statusLeft = document.querySelector<HTMLSpanElement>("#status-left")!;
 const statusRight = document.querySelector<HTMLSpanElement>("#status-right")!;
 const sideButtons = document.querySelectorAll<HTMLButtonElement>(".side-button");
+const difficultyButtons = document.querySelectorAll<HTMLButtonElement>(".difficulty-button");
 
 // ---------------------------------------------------------------------------
 // Keyboard -> one of the 9 actions
@@ -62,7 +63,7 @@ window.addEventListener("keydown", (event) => {
     event.preventDefault(); // stop arrow keys scrolling the page
   } else if (event.code === "Space") {
     event.preventDefault();
-    if (state !== "loading") startGame();
+    if (state === "ready" || state === "over") startGame();
   }
 });
 window.addEventListener("keyup", (event) => held.delete(event.code));
@@ -71,10 +72,13 @@ window.addEventListener("blur", () => held.clear()); // don't get stuck moving a
 // ---------------------------------------------------------------------------
 // Game state
 // ---------------------------------------------------------------------------
+type Difficulty = "easy" | "medium" | "hard";
+
 let state: "loading" | "ready" | "playing" | "over" = "loading";
 let humanSide: AgentName = "prey";
-let policies: PerAgent<Policy>;
-let game: Game;
+let difficulty: Difficulty = "easy";
+let aiPolicy: Policy;
+let game: Game | undefined;
 let observations: PerAgent<Float32Array>;
 let previous: PerAgent<Vec2>; // positions before the latest step, for smooth drawing
 let accumulator = 0;
@@ -84,16 +88,50 @@ function aiSide(): AgentName {
   return humanSide === "prey" ? "predator" : "prey";
 }
 
-function chooseSide(side: AgentName) {
-  humanSide = side;
-  sideButtons.forEach((b) => b.classList.toggle("active", b.dataset.side === side));
-  if (state !== "loading") showReady();
+// Each side and difficulty has its own model file, e.g. models/prey-hard.json.
+// Files are downloaded the first time they're needed, then kept.
+const policyCache = new Map<string, Promise<{ policy: Policy; model: ExportedModel }>>();
+
+function getPolicy(side: AgentName, level: Difficulty) {
+  const key = `${side}-${level}`;
+  if (!policyCache.has(key)) {
+    policyCache.set(key, loadModel(key).then((model) => ({ policy: loadPolicy(model), model })));
+  }
+  return policyCache.get(key)!;
+}
+
+// Load the AI for the current side and difficulty, then get ready to play
+async function setUp() {
+  state = "loading";
+  sideButtons.forEach((b) => b.classList.toggle("active", b.dataset.side === humanSide));
+  difficultyButtons.forEach((b) => b.classList.toggle("active", b.dataset.difficulty === difficulty));
+  showOverlay("Loading the agent…");
+
+  const wanted = `${humanSide}-${difficulty}`;
+  try {
+    const { policy, model } = await getPolicy(aiSide(), difficulty);
+    if (wanted !== `${humanSide}-${difficulty}`) return; // the player changed their mind while it loaded
+    aiPolicy = policy;
+    game ??= new Game(model.game_config);
+    showReady();
+  } catch (error) {
+    showOverlay(`Something went wrong loading the agent.\n${(error as Error).message}`);
+  }
 }
 
 sideButtons.forEach((button) =>
   button.addEventListener("click", () => {
-    chooseSide(button.dataset.side as AgentName);
+    humanSide = button.dataset.side as AgentName;
     button.blur(); // so Space doesn't "click" the button again
+    setUp();
+  }),
+);
+
+difficultyButtons.forEach((button) =>
+  button.addEventListener("click", () => {
+    difficulty = button.dataset.difficulty as Difficulty;
+    button.blur();
+    setUp();
   }),
 );
 
@@ -104,16 +142,16 @@ function showOverlay(text: string) {
 
 function showReady() {
   state = "ready";
-  game.resetRandom();
+  game!.resetRandom();
   snapshotPositions();
   const goal = humanSide === "prey"
     ? "You are the blue prey.\nStay alive for 30 seconds."
     : "You are the red predator.\nCatch the prey within 30 seconds.";
-  showOverlay(`${goal}\n\nPress Space to start`);
+  showOverlay(`${goal}\nOpponent: ${difficulty} AI ${aiSide()}\n\nPress Space to start`);
 }
 
 function startGame() {
-  observations = game.resetRandom();
+  observations = game!.resetRandom();
   snapshotPositions();
   accumulator = 0;
   state = "playing";
@@ -121,6 +159,7 @@ function startGame() {
 }
 
 function snapshotPositions() {
+  const game = currentGame();
   previous = {
     predator: [...game.states.predator.position] as Vec2,
     prey: [...game.states.prey.position] as Vec2,
@@ -128,11 +167,12 @@ function snapshotPositions() {
 }
 
 function tick() {
+  const game = currentGame();
   snapshotPositions();
   const ai = aiSide();
   const actions = {
     [humanSide]: keyboardAction(),
-    [ai]: policies[ai](observations[ai]),
+    [ai]: aiPolicy(observations[ai]),
   } as PerAgent<number>;
 
   const result = game.step(actions);
@@ -164,6 +204,7 @@ function lerp(a: Vec2, b: Vec2, t: number): Vec2 {
 }
 
 function draw(alpha: number) {
+  const game = currentGame();
   ctx.fillStyle = COLOURS.background;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -225,27 +266,20 @@ function frame(now: number) {
     }
   }
 
-  if (state !== "loading") draw(accumulator / STEP_MS);
+  if (game) draw(accumulator / STEP_MS);
   requestAnimationFrame(frame);
 }
 
-async function loadModel(side: AgentName): Promise<ExportedModel> {
-  const response = await fetch(`${import.meta.env.BASE_URL}models/${side}.json`);
-  if (!response.ok) throw new Error(`couldn't load the ${side} model (${response.status})`);
+function currentGame(): Game {
+  if (!game) throw new Error("game not created yet");
+  return game;
+}
+
+async function loadModel(name: string): Promise<ExportedModel> {
+  const response = await fetch(`${import.meta.env.BASE_URL}models/${name}.json`);
+  if (!response.ok) throw new Error(`couldn't load the ${name} model (${response.status})`);
   return response.json();
 }
 
-async function init() {
-  chooseSide("prey");
-  try {
-    const [predatorModel, preyModel] = await Promise.all([loadModel("predator"), loadModel("prey")]);
-    policies = { predator: loadPolicy(predatorModel), prey: loadPolicy(preyModel) };
-    game = new Game(predatorModel.game_config);
-    showReady();
-    requestAnimationFrame(frame);
-  } catch (error) {
-    showOverlay(`Something went wrong loading the agents.\n${(error as Error).message}`);
-  }
-}
-
-init();
+setUp();
+requestAnimationFrame(frame);
