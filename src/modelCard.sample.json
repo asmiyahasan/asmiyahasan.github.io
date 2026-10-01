@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "tag": "models-v1",
+  "released_from_history": {
+    "version": 1,
+    "promoted": [
+      "predator",
+      "prey"
+    ],
+    "at": "2026-10-01T03:56:54+00:00",
+    "report": "reports/gate_20261001_035654.json"
+  },
+  "game_config": {
+    "predator_max_speed": 3.0,
+    "predator_acceleration": 7.0,
+    "prey_max_speed": 3.0,
+    "prey_acceleration": 9.0,
+    "obstacles": [
+      [
+        2.2,
+        2.2,
+        1.6,
+        1.6
+      ],
+      [
+        6.2,
+        2.2,
+        1.6,
+        1.6
+      ],
+      [
+        2.2,
+        6.2,
+        1.6,
+        1.6
+      ],
+      [
+        6.2,
+        6.2,
+        1.6,
+        1.6
+      ]
+    ]
+  },
+  "agents": {
+    "predator": {
+      "source_model": "models/selfplay_memory/predator/gen_010.zip",
+      "promoted_in_version": 1,
+      "trained_steps": 2129920,
+      "sha256": "dcd47afc0aac82543b523689946634ba9b0daf9f7ee6118e831b9cf2d5cd27cb",
+      "gate_results": {
+        "vs_fleer": 0.867,
+        "baseline_ok": true,
+        "promote": true
+      }
+    },
+    "prey": {
+      "source_model": "models/selfplay_memory/prey/gen_010.zip",
+      "promoted_in_version": 1,
+      "trained_steps": 2129920,
+      "sha256": "6815f60db6e70d0f354071648bdef1e4814e3fb7405545903199d4415c876679",
+      "gate_results": {
+        "vs_chaser": 0.967,
+        "baseline_ok": true,
+        "promote": true
+      }
+    }
+  }
+}

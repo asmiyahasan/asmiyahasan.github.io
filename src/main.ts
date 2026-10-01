@@ -11,6 +11,7 @@ import { Game } from "./game/game";
 import type { AgentName, PerAgent } from "./game/game";
 import { loadPolicy } from "./game/policy";
 import type { ExportedModel, Policy } from "./game/policy";
+import { showModelCard } from "./modelCard";
 
 const STEP_MS = DT * 1000;
 const COLOURS = {
@@ -283,3 +284,4 @@ async function loadModel(name: string): Promise<ExportedModel> {
 
 setUp();
 requestAnimationFrame(frame);
+showModelCard(document.querySelector<HTMLElement>("#model-card")!);
