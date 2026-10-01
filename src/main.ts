@@ -13,6 +13,7 @@ import type { AgentName, PerAgent } from "./game/game";
 import { loadPolicy } from "./game/policy";
 import type { ExportedModel, Policy } from "./game/policy";
 import { showModelCard } from "./modelCard";
+import { setUpTicTacToe } from "./tictactoe/ui";
 
 const STEP_MS = DT * 1000;
 // Matches the site palette in style.css: the accent magenta is the predator
@@ -319,3 +320,4 @@ async function loadModel(name: string): Promise<ExportedModel> {
 setUp();
 requestAnimationFrame(frame);
 showModelCard(document.querySelector<HTMLElement>("#model-card")!);
+setUpTicTacToe(document.querySelector<HTMLElement>("#teach")!);

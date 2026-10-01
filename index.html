@@ -84,6 +84,61 @@
         </div>
       </section>
 
+      <!-- Teach an agent tic-tac-toe -->
+      <section id="teach" class="teach" aria-labelledby="teach-title">
+        <h2 id="teach-title">Teach an agent tic-tac-toe</h2>
+        <p>
+          This agent starts out knowing only the rules. Every game you play against it, it
+          updates its opinion of each position it has seen, so if you beat it the same way twice
+          it starts to block you. Or let it practise against itself and watch the chart climb.
+        </p>
+
+        <div class="teach-layout">
+          <div class="ttt">
+            <div class="ttt-board" role="group" aria-label="Tic-tac-toe board"></div>
+            <p class="ttt-status" aria-live="polite"></p>
+            <p class="ttt-tally"></p>
+            <div class="ttt-actions">
+              <button id="ttt-new" class="button">New game</button>
+              <label class="check">
+                <input type="checkbox" id="ttt-thinking" checked />
+                Show what it's thinking
+              </label>
+            </div>
+          </div>
+
+          <div class="ttt-panel">
+            <figure class="ttt-chart">
+              <figcaption>
+                How often it avoids losing to a perfect player
+                <small>Each point is a 200-game test. A perfect player can't be beaten, so 100% means every game was a draw: the agent plays perfectly.</small>
+              </figcaption>
+              <div class="ttt-chart-area">
+                <svg role="img" aria-label="Line chart of the agent's results as it learns"></svg>
+                <div class="ttt-tooltip" hidden></div>
+              </div>
+            </figure>
+            <p class="ttt-count"></p>
+
+            <div class="ttt-buttons">
+              <button id="ttt-practise" class="button button-accent">Practise 250 games</button>
+              <button id="ttt-forget" class="button">Forget everything</button>
+            </div>
+
+            <label class="slider" for="ttt-lr">
+              <span>Learning rate <output id="ttt-lr-value"></output></span>
+              <input type="range" id="ttt-lr" min="0.05" max="1" step="0.05" value="0.3" />
+              <small>How far each game moves its opinions. High learns fast but can swing wildly.</small>
+            </label>
+            <label class="slider" for="ttt-exploration">
+              <span>Exploration <output id="ttt-exploration-value"></output></span>
+              <input type="range" id="ttt-exploration" min="0" max="0.5" step="0.05" value="0.1" />
+              <small>How often it tries a random move to discover new ideas, even against you.</small>
+            </label>
+          </div>
+        </div>
+      </section>
+
       <!-- Other projects -->
       <section class="projects" aria-labelledby="projects-title">
         <h2 id="projects-title">Other projects</h2>
