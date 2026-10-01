@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Predator vs Prey</title>
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <h1>Predator vs Prey</h1>
+        <p class="subtitle">Two agents trained by self-play reinforcement learning. Pick a side and play against the other one.</p>
+      </header>
+
+      <div class="controls">
+        <button id="play-prey" class="side-button" data-side="prey">Play as prey</button>
+        <button id="play-predator" class="side-button" data-side="predator">Play as predator</button>
+      </div>
+
+      <div class="arena-wrap">
+        <canvas id="arena" width="600" height="600" aria-label="Game arena"></canvas>
+        <div id="overlay" class="overlay">
+          <p id="overlay-text">Loading the agents…</p>
+        </div>
+      </div>
+
+      <div class="status">
+        <span id="status-left"></span>
+        <span id="status-right"></span>
+      </div>
+
+      <p class="help">Move with the arrow keys or WASD. Hold two keys to move diagonally. Press Space to start or restart.</p>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
