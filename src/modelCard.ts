@@ -76,8 +76,7 @@ export function renderModelCard(card: ModelCard): string {
     <p class="card-summary">
       Champion models
       <a href="${RELEASES_URL}${encodeURIComponent(card.tag)}" target="_blank" rel="noopener">v${card.version}</a>,
-      released ${escape(date)}. A new model only replaces these after beating them in
-      300 evaluation games and passing every parity test against the Python training code.
+      released ${escape(date)}.
     </p>
     <ul class="card-agents">
       ${describeAgent("predator", card.agents.predator)}

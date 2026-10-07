@@ -26,9 +26,10 @@
       <article id="teach" class="teach game-page" aria-labelledby="teach-title">
         <h1 id="teach-title">Teach an agent tic&#8209;tac&#8209;toe</h1>
         <p>
-          This agent starts out knowing only the rules. Every game you play against it, it
-          updates its opinion of each position it has seen, so if you beat it the same way twice
-          it starts to block you. Or let it practise against itself and watch the chart climb.
+          This agent starts out knowing only the rules. After every game you play, it
+          updates its opinion of each position it saw, so if you beat it the same way
+          twice, it starts to block you. You can also let it practise against itself
+          and watch its win rate go up.
         </p>
 
         <div class="teach-layout">
@@ -89,9 +90,7 @@
         <p>
           After each game it walks back through the positions both players moved to, nudging each
           one towards the value of the position that came next, and the last one towards the
-          result. Boards that are rotations or mirror images of each other count as one position,
-          so it learns 8 times faster. This is the method from chapter 1 of Sutton and Barto's
-          <em>Reinforcement Learning: An Introduction</em>.
+          result.
         </p>
         <p>
           <a class="text-link" href="https://github.com/asmiyahasan/asmiyahasan.github.io/tree/main/src/tictactoe" target="_blank" rel="noopener">Read the code</a>

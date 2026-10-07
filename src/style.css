@@ -605,6 +605,8 @@ canvas {
 /* ------------------------------------------------------------------
    Projects, about, contact
    ------------------------------------------------------------------ */
+
+
 .project-list {
   margin: 0;
   padding: 0;
@@ -643,7 +645,11 @@ canvas {
 
 .project-links {
   margin-top: 0.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
 }
+
 
 .project-list p {
   margin-bottom: 0.4rem;

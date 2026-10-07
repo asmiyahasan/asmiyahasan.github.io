@@ -35,7 +35,6 @@
         <p class="intro-links">
           <a href="https://github.com/asmiyahasan" target="_blank" rel="noopener">GitHub</a>
           <a href="https://www.linkedin.com/in/asmiyahasan" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="Asmiya_Hasan_CV.pdf" target="_blank" rel="noopener">CV</a>
         </p>
       </section>
 
@@ -49,12 +48,12 @@
             <h4>Predator vs Prey</h4>
             <p>
               Two agents that taught themselves to hunt and to hide through self-play
-              reinforcement learning, shipped to the browser by an automated pipeline that tests
-              and gates every new model. Play as either side.
+              reinforcement learning. You can play as either side!
             </p>
             <p class="project-meta">Python, PyTorch, Stable-Baselines3, PettingZoo, TypeScript, GitHub Actions</p>
             <p class="project-links">
-              <a class="text-link" href="predator-prey/">Play and read how it was built</a>
+              <a class="text-link" href="predator-prey/">Play</a>
+              <a class="text-link" href="https://github.com/asmiyahasan/predator-prey" aria-label="Predator vs Prey source code on GitHub">Code</a>
             </p>
           </li>
           <li>
@@ -67,6 +66,10 @@
             <p class="project-meta">TypeScript, tabular reinforcement learning</p>
             <p class="project-links">
               <a class="text-link" href="tic-tac-toe/">Play</a>
+              <a class="text-link" href="https://github.com/asmiyahasan/asmiyahasan.github.io/tree/main/src/tictactoe" aria-label="Tic-tac-toe source code on GitHub">Code</a>
+            </p>
+
+         </p>
             </p>
           </li>
         </ul>
@@ -74,14 +77,28 @@
         <h3 class="project-group">Other projects</h3>
         <ul class="project-list">
           <li>
+            <h4>Gift recommender agent</h4>
+            <p>
+              A chat app that suggests real gifts from a description of the person you're buying for.
+              I scraped a retailer's catalogue and used an LLM to rewrite each product as a profile of
+              who it would suit. An agent then searches those profiles semantically, so it matches on
+              personality and lifestyle rather than keywords, and returns three picks with its reasoning.
+            </p>
+            <p class="project-meta">Python, LangGraph, Claude API, ChromaDB, SQLite, Playwright, Streamlit</p>
+            <p class="project-links">
+              <a class="text-link" href="https://github.com/asmiyahasan/gift-recommender"
+                aria-label="Gift recommender source code on GitHub">Code</a>
+            </p>
+          </li>
+          <li>
             <h4>Multimodal plan recognition for adaptive assistance in AR</h4>
             <p>
               My master's thesis. A probabilistic model that combines eye gaze and hand movements
               to work out which recipe someone is following, and which step they're on, in real
               time (95.8% accuracy). It also detects mistakes and hesitation, flagging 78% of the
-              moments when users needed help. Data came from a 3D kitchen I built in Unity.
+              moments when users needed help. Data came from a 3D kitchen I built in Unity, using the Varjo XR-4 and Meta Quest Pro.
             </p>
-            <p class="project-meta">Python, Unity, VR eye and hand tracking, machine learning</p>
+            <p class="project-meta">Python, Unity, Varjo XR-4, Meta Quest Pro, eye and hand tracking, machine learning</p>
           </li>
           <li>
             <h4>Robotic pick-and-place with deep reinforcement learning</h4>
@@ -91,14 +108,9 @@
               on real hardware without retraining.
             </p>
             <p class="project-meta">Python, PyTorch, MuJoCo, ROS 2</p>
-          </li>
-          <li>
-            <h4>Reflexo</h4>
-            <p>
-              A native iOS app with four reflex-training mini-games, sign-in, global leaderboards,
-              offline score history and a home-screen widget. Built with a teammate.
+            <p class="project-links">
+              <a class="text-link" href="https://github.com/asmiyahasan/panther_ur5e_drl" aria-label="Robotic pick-and-place source code on GitHub">Code</a>
             </p>
-            <p class="project-meta">Swift, SwiftUI, SwiftData, WidgetKit, Firebase</p>
           </li>
         </ul>
       </section>
@@ -108,34 +120,30 @@
         <h2 id="about-title">About</h2>
         <p>
           I studied electrical and electronic engineering at BUET, then spent time at Huawei
-          Technologies (BD) supporting real-time systems for telecom operators. I moved to
-          Melbourne for a Master of Artificial Intelligence at RMIT. I enjoy building interactive
-          things, from iOS games to robot arms to the agents on this page.
+          Technologies (BD) supporting live systems for telecom operators. I moved to
+          Melbourne for a Master of Artificial Intelligence at RMIT. I enjoy building and experimenting with code, and 
+          I have a graveyard of half-finished side projects to prove it. ;)
         </p>
         <dl class="skills">
+          <div> 
+            <dt>Focus areas</dt>
+            <dd>Reinforcement learning, multimodal models, deep learning</dd>
+          </div>
           <div>
             <dt>Languages</dt>
-            <dd>Python, Swift, TypeScript, C#, Java, SQL</dd>
+            <dd>Python, C#, Java, TypeScript, SQL, Swift</dd>
           </div>
           <div>
             <dt>Machine learning</dt>
             <dd>PyTorch, TensorFlow, scikit-learn, Stable-Baselines3, Gymnasium, PettingZoo, OpenCV</dd>
           </div>
           <div>
-            <dt>Focus areas</dt>
-            <dd>Reinforcement learning, computer vision, multimodal models, deep learning</dd>
-          </div>
-          <div>
-            <dt>Apps and interaction</dt>
-            <dd>iOS (SwiftUI, SwiftData, WidgetKit), Unity, VR eye and hand tracking, web (Vite, Canvas)</dd>
-          </div>
-          <div>
             <dt>Robotics</dt>
             <dd>MuJoCo, ROS 2</dd>
           </div>
           <div>
-            <dt>Tools</dt>
-            <dd>Git, GitHub Actions, pytest, Vitest, Linux, AWS, Firebase, Oracle, MySQL</dd>
+            <dt>Tools and platforms</dt>
+            <dd>Git, Linux, AWS, Unity, VR</dd>
           </div>
         </dl>
       </section>
@@ -152,7 +160,7 @@
     </main>
 
     <footer class="site-footer">
-      <p>Built with TypeScript and Vite. Everything runs in your browser; nothing is sent to a server.</p>
+      <p>Built with TypeScript and Vite.</p>
     </footer>
 
     <script type="module" src="/src/home.ts"></script>
